@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html STYLE="height:100%">
+<head>
+<meta charset=utf-8 />
+
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="">
+<title>videojs-contrib-hls embed</title>
+<STYLE>
+*{
+padding:0;margin:0;
+}
+#msg{
+color:#fff;
+text-shadow: #000 0px 1px 1px;
+font-size:14px;
+}
+.name{
+color:#2de9ff;
+}
+</style>
+  <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+  <script src="https://unpkg.com/video.js/dist/video.js"></script>
+  <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+  
+</head>
+<body STYLE="height:100%">
+<ul style="
+    padding: 10px;
+    background: rgba(0,0,0,.5);
+    color: #fff;
+    font-size: 16px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+"><li style="display:inline-block"><a><img class="photo" style="
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+"></a></li> <li style="display:inline-block"><p class="room-user-name"></p> <p class="popular"> <span></span>人</p></li> </ul>
+<div class="mask" style="height: 100%;background-position: center center;filter: blur(30px);background-size: cover;position: fixed;width: 100%;z-index: -1;top: 0;"></div>
+<div style="
+
+    width: 132px;
+    height: 132px;
+    background-position: 0 0;
+    background-size: cover;
+    background: url(https://www.jwg1092.com/mobile/images/btn_room.png) no-repeat;
+    position: fixed;
+    top: 28%;
+    left: 50%;
+    margin-left: -66px;
+    margin-right: -66px;
+
+"></div>
+  <video id="my_video_1" style="object-fit: fill;width: 100%;position: fixed;bottom: calc(58% - 130px);opacity:0"
+ preload="load"
+          playsinline="true"
+          webkit-playsinline="true"
+          x-webkit-airplay="allow"
+          airplay="allow"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          x5-video-orientation="portrait" 
+>
+    <source type="application/x-mpegURL"></source>
+  </video>
+<div id="msg" style="
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: fixed;
+    bottom: 15px;
+    padding: 15px;
+    box-sizing: border-box;
+">
+欢迎来到直播间
+	</div>
+<script type="text/javascript">
+var data=[];
+    var xhr=new XMLHttpRequest();
+    xhr.onreadystatechange= function () {
+        if(xhr.readyState==4&&/^2\d\d$/.test(xhr.status)){
+            data=JSON.parse(xhr.responseText);
+            console.log(data)
+        }
+    };
+window.ontouchstart=function(){
+	
+document.querySelector(".my_video_1-dimensions").style.opacity=1;
+	document.querySelector("#my_video_1_html5_api").style.opacity=1;
+	document.querySelector("#my_video_1_html5_api").play()}
+window.onload= function () {
+
+        xhr.open("get","https://jwroot.youxuanmeijia.cn/video_rest/index/anchor?0.6896156590727867&cb_anchor=cb_anchor",false);
+        xhr.send()
+    };
+WebSocketTest()
+document.querySelector(".mask").style.backgroundImage = "url(https://jwroot.youxuanmeijia.cn/video_rest/video/img/get_cover?uid="+location.href.split('?')[1]+')'
+document.querySelector(".photo").src = "https://jwroot.youxuanmeijia.cn/video_rest/video/img/get_cover?uid="+location.href.split('?')[1]
+         function WebSocketTest()
+         {
+
+var data_url=""
+            if ("WebSocket" in window)
+            {
+               console.log("您的浏览器支持 WebSocket!");
+               
+               // 打开一个 web socket
+               var ws = new WebSocket("wss://www.jwsjh5.com/bar_chat/-1_"+location.href.split('?')[1]);
+                
+
+                
+               ws.onmessage = function (evt) 
+               { 
+                  var msg = JSON.parse(JSON.parse(evt.data).content);
+if(msg.cmd == 159213){
+data_url = msg.rtmp.replace("rtmp://","http://")+'/'
+}else if(msg.cmd == 19213){
+data_url = data_url + msg.sid+'_aac/playlist.m3u8'
+console.log(data_url)
+document.querySelector(".room-user-name").innerHTML=msg.name
+document.querySelector("#my_video_1 source").src = 
+data_url
+videojs('my_video_1').play()
+}else if(msg.cmd ==59213){
+document.querySelector('#msg').innerHTML+="</br>"+msg.date+"&ensp;<span class = 'name'>"+msg.s_name+'：</span>'+msg.msg
+document.querySelector('#msg').scrollTop=document.querySelector('#msg').scrollHeight
+}else if(msg.cmd ==21215){
+	document.querySelector(".popular span").innerHTML=msg.guests
+}
+               };
+                
+               ws.onclose = function()
+               { 
+                  // 关闭 websocket
+                  console.log("连接已关闭..."); 
+               };
+            }
+            
+            else
+            {
+               // 浏览器不支持 WebSocket
+               console.log("您的浏览器不支持 WebSocket!");
+            }
+         }
+      </script>
+  
+</body>
+</html>
